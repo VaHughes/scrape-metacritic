@@ -8,24 +8,31 @@ import org.jsoup.nodes.Element;
 
 
 public class Start {
+	
+	//Change the url here for the chosen game on metacritic
+	static String urlAddress = "http://www.metacritic.com/game/xbox-360/street-fighter-iv/critic-reviews";
 
 	public static void main(String[] args) {
+		
 		try {
 			Document doc;
-			doc = Jsoup.connect("http://www.metacritic.com/game/xbox-360/splosion-man/critic-reviews").get();
+			doc = Jsoup.connect(urlAddress).get();
 			
-			String zzz = "div.review_critic";
-			String yyy = "div.review_grade";
-			ReviewSites rs = new ReviewSites();
+			String critic = "div.review_critic";
+			String reviewGrade = "div.review_grade";
+			Element metalinks = doc.select("meta[name=og:title]").first();
+			String gameTitle = metalinks.attr("content").toString();
+			
+			ReviewSites rs = new ReviewSites(gameTitle);
 			
 			for(int i = 1; i < 100; i++) {
 				try {
-					Element b = doc.select(zzz).get(i);
-					Element c = doc.select(yyy).get(i);
-					String g = b.text();
-					String gg = c.text();
+					Element b = doc.select(critic).get(i);
+					Element c = doc.select(reviewGrade).get(i);
+					String criticText = b.text();
+					String reviewGradeText = c.text();
 					
-					rs.ReviewNames(g, gg);
+					rs.ReviewNames(criticText, reviewGradeText);
 					
 				} catch (Exception e) {
 					return;
@@ -34,7 +41,6 @@ public class Start {
 			
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
